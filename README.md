@@ -1,3 +1,10 @@
+# bienvenue a bus touristique
+
+- pour faire marcher ce bus avec lampes : tu auras besoin d'une ampoule connectée, wifi, d'une enceinte connectée
+- créer un nouveau bus et embarque pour un super voyage
+
+- choisis la lumiere dedans, dehors, la musique ou radio, les arrets, et tes messages favoris dans le bus
+
 - execute python script pour faire gym en musique avec scenes assistant vocal
 # assistant-vocal-led-music-gym
 - python 3 app

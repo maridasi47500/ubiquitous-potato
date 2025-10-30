@@ -2,29 +2,70 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Choix de la Séance</title>
+    <title>Choix d'un  Bus</title>
+<style>
+
+.trait-jaune {
+  /* Supprime la bordure par défaut qui peut varier selon les navigateurs */
+  border: none;
+  /* Définit la couleur de fond du trait */
+  background-color: yellow; /* Couleur bleue */
+  /* Définit l'épaisseur du trait */
+  height: 2px; 
+}
+.trait-rouge {
+  /* Supprime la bordure par défaut qui peut varier selon les navigateurs */
+  border: none;
+  /* Définit la couleur de fond du trait */
+  background-color: #0000FF; /* Couleur bleue */
+  /* Définit l'épaisseur du trait */
+  height: 2px; 
+}
+.trait-bleu {
+  /* Supprime la bordure par défaut qui peut varier selon les navigateurs */
+  border: none;
+  /* Définit la couleur de fond du trait */
+  background-color: #0000FF; /* Couleur bleue */
+  /* Définit l'épaisseur du trait */
+  height: 2px; 
+}
+.trait-vert {
+  /* Supprime la bordure par défaut qui peut varier selon les navigateurs */
+  border: none;
+  /* Définit la couleur de fond du trait */
+  background-color: green; /* Couleur bleue */
+  /* Définit l'épaisseur du trait */
+  height: 2px; 
+}
+
+</style>
 </head>
 <body>
+<hr class="trait-bleu">
+
 <a href="/formlamp">creer un effet de lampes</a>
 <a href="/effets">voir tous les effet de lampes</a>
-    <h1>🎯 Lance ta séance Hula Hoop</h1>
+    <h1>&#127796; Lance ta tournée en bus &#127796;</h1>
     <form method="post">
 <div class="field">
-        <label for="theme">Choisis ton thème :</label>
+        <label for="theme">&#127866; Choisis ton thème :</label>
         <select name="theme" id="theme">
             {% for key, val in menu.items() %}
                 <option value="{{ key }}">{{ val.nom }}</option>
             {% endfor %}
         </select>
 </div>
+
 <div class="field">
         <label for="randomlist">liste au hasard?</label>
         <input type="checkbox" value="1" name="randomlist" id="randomlist"/>
 </div>
+
 <div class="actions">
         <button type="submit">Lancer</button>
 </div>
     </form>
+<hr class="trait-vert">
     <form method="post" action="/generer_yaml">
         <label for="theme">Choisis ton thème :</label>
         <select name="theme" id="mytheme">
@@ -38,16 +79,18 @@
     {% if message %}
         <p><strong>{{ message }}</strong></p>
     {% endif %}
-<h1>📋 Séances enregistrées</h1>
-<a href="{{ url_for('new') }}">➕ Ajouter une séance</a>
+<hr class="trait-rouge">
+<h1>&#127796; Bus enregistrés&#127796;</h1>
+<a href="{{ url_for('new') }}">➕ Ajouter une shiva</a>
 <ul>
-  {% for s in seances %}
+  {% for bus in mesbus %}
     <li>
-      <strong>{{ seances[s]['nom'] }}</strong> — {{ seances[s]['lumiere'] }}
-      <a href="{{ url_for('edit', seance_id=seances[s]['id']) }}">✏️ Modifier</a>
+      <strong>{{ bus[s]['nom'] }}</strong> — {{ bus[s]['lumiere'] }}
+      <a href="{{ url_for('edit', seance_id=bus[s]['id']) }}">✏️ Modifier</a>
     </li>
   {% endfor %}
 </ul>
+<hr class="trait-jaune">
 
 
 </body>
