@@ -2,7 +2,7 @@ import yaml
 import random
 
 # Menu des séances
-menu_seances = {
+menu_bus = {
     "zen_fluidite": {
         "nom": "Zen et Fluidité",
         "musique": "playlist chill ou ambient",
@@ -27,7 +27,7 @@ menu_seances = {
         "duree_phase": 5,
         "pas_tours": 5
     },
-    "seance_duo": {
+    "bus_duo": {
         "nom": "Séance En Duo",
         "musique": "playlist duo dynamique",
         "lumiere": "double flash",
@@ -42,12 +42,12 @@ menu_seances = {
 }
 
 # Fonction principale
-def generer_seance_yaml(theme):
-    params = menu_seances[theme]
+def generer_bus_yaml(theme):
+    params = menu_bus[theme]
 
-    seance = {
+    bus = {
         "metadata": {
-            "name": f"seance hula hoop - {params['nom']}",
+            "name": f"bus hula hoop - {params['nom']}",
             "description": f"Seance guidee avec theme {params['nom']}, musique et lumiere adapte"
         },
         "automations": {
@@ -55,7 +55,7 @@ def generer_seance_yaml(theme):
                 {
                     "type": "assistant.event.OkGoogle",
                     "eventData": "query",
-                    "is": f"demarrer seance hula hoop {params['nom']}"
+                    "is": f"demarrer bus hula hoop {params['nom']}"
                 }
             ],
             "actions": []
@@ -63,10 +63,10 @@ def generer_seance_yaml(theme):
     }
 
     # Accueil
-    seance["automations"]["actions"].extend([
+    bus["automations"]["actions"].extend([
         {
             "type": "assistant.command.OkGoogle",
-            "okGoogle": f"repete apres moi Bienvenue dans ta seance {params['nom']}",
+            "okGoogle": f"repete apres moi Bienvenue dans ta bus {params['nom']}",
             "devices": "Jardin de devant - Jardin de devant"
         },
         {
@@ -90,7 +90,7 @@ def generer_seance_yaml(theme):
 
             message_motivation = random.choice(params["motivations"])
 
-            seance["automations"]["actions"].extend([
+            bus["automations"]["actions"].extend([
                 {
                     "type": "assistant.command.OkGoogle",
                     "okGoogle": f"repete apres moi {message_direction}",
@@ -119,7 +119,7 @@ def generer_seance_yaml(theme):
             ])
 
     # Fin de séance
-    seance["automations"]["actions"].extend([
+    bus["automations"]["actions"].extend([
         {
             "type": "assistant.command.OkGoogle",
             "okGoogle": "repete apres moi Seance terminee bravo",
@@ -138,21 +138,21 @@ def generer_seance_yaml(theme):
     ])
 
     # Sauvegarde
-    nom_fichier = f"seance_hula_hoop_{theme}.yaml"
+    nom_fichier = f"bus_hula_hoop_{theme}.yaml"
     with open(nom_fichier, "w", encoding="utf-8") as fichier:
-        yaml.dump(seance, fichier, sort_keys=False)
+        yaml.dump(bus, fichier, sort_keys=False)
 
     print(f"✅ Fichier YAML '{nom_fichier}' cree avec succes pour le theme '{params['nom']}'")
 
 # Exemple d'utilisation
 if __name__ == "__main__":
     print("Choisis ton theme :")
-    for key, val in menu_seances.items():
+    for key, val in menu_bus.items():
         print(f"- {key} : {val['nom']}")
     
     choix = input("Tape le nom du theme (ex: zen_fluidite) : ").strip()
-    if choix in menu_seances:
-        generer_seance_yaml(choix)
+    if choix in menu_bus:
+        generer_bus_yaml(choix)
     else:
         print("❌ Theme invalide. Relance le script et choisis parmi les options.")
 

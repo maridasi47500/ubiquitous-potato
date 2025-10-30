@@ -9,7 +9,7 @@ def clean_and_parse_json(text):
         return []
 
 
-DB_PATH = "seances.db"
+DB_PATH = "bus.db"
 def nettoyer_json_embedded(data, max_depth=5):
     """Essaie de décoder un JSON encodé plusieurs fois."""
     for _ in range(max_depth):
@@ -27,18 +27,18 @@ def get_connection():
 
 
 
-def get_all_seances():
+def get_all_bus():
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM seances")
+    cursor.execute("SELECT * FROM bus")
     rows = cursor.fetchall()
     conn.close()
     return rows
 
-def get_seance_by_id(seance_id):
+def get_bus_by_id(bus_id):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM seances WHERE id = ?", (seance_id,))
+    cursor.execute("SELECT * FROM bus WHERE id = ?", (bus_id,))
     row = cursor.fetchone()
     hey =  (
             row[0],
@@ -59,23 +59,23 @@ clean_and_parse_json(nettoyer_json_embedded(row[6])),
     conn.close()
     return hey
 
-def save_seance(theme, nom, musique, lumiere, directions, motivations,
-                nombre_max_tours, duree_phase, pas_tours, repetitions, nbmintours, seance_id=None):
+def save_bus(theme, nom, musique, lumiere, directions, motivations,
+                nombre_max_tours, duree_phase, pas_tours, repetitions, nbmintours, bus_id=None):
     conn = get_connection()
     cursor = conn.cursor()
-    if seance_id:
+    if bus_id:
         cursor.execute("""
-            UPDATE seances SET theme=?, nom=?, musique=?, lumiere=?, directions=?, motivations=?,
+            UPDATE bus SET theme=?, nom=?, musique=?, lumiere=?, directions=?, motivations=?,
             nombre_max_tours=?, duree_phase=?, pas_tours=?, repetitions=?, nbmintours=? WHERE id=?
         """, (
             theme, nom, musique, lumiere,
             (directions),
             (motivations),
-            nombre_max_tours, duree_phase, pas_tours, repetitions, nbmintours, seance_id
+            nombre_max_tours, duree_phase, pas_tours, repetitions, nbmintours, bus_id
         ))
     else:
         cursor.execute("""
-            INSERT INTO seances (theme, nom, musique, lumiere, directions, motivations,
+            INSERT INTO bus (theme, nom, musique, lumiere, directions, motivations,
             nombre_max_tours, duree_phase, pas_tours, repetitions, nbmintours)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
@@ -87,22 +87,22 @@ def save_seance(theme, nom, musique, lumiere, directions, motivations,
     conn.commit()
     conn.close()
 
-def ajouter_seance(theme, nom, musique, lumiere, directions, motivations, nombre_max_tours, duree_phase, pas_tours, repetitions , nbmintours=2):
+def ajouter_bus(theme, nom, musique, lumiere_dedans, lumiere_dehors, directions, messages, nombre_max_tours, duree_phase, pas_tours, repetitions , nbmintours=2):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-    INSERT INTO seances (theme, nom, musique, lumiere, directions, motivations, nombre_max_tours, duree_phase, pas_tours, repetitions,nbmintours)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO bus (theme, nom, musique, lumiere_dehors, lumiere_dedans, directions, messages, nombre_max_tours, duree_phase, nbmintours)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         theme, nom, musique, lumiere,
         json.dumps(directions),
-        json.dumps(motivations),
-        nombre_max_tours, duree_phase, pas_tours, repetitions, nbmintours
+        json.dumps(messages),
+        nombre_max_tours, duree_phase, nbmintours
     ))
     conn.commit()
 
 # Exemple d'ajout
-#ajouter_seance(
+#ajouter_bus(
 #    theme="zen_fluidite",
 #    nom="Zen et Fluidité",
 #    musique="https://stunnel1.cyber-streaming.com:9162/stream?",
@@ -161,21 +161,21 @@ def create_type_effet(effet_id, mytype, myvalue):
     conn.commit()
     conn.close()
 
-def get_all_seances():
+def get_all_bus():
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM seances ORDER BY id ASC")
-    seances = cursor.fetchall()
+    cursor.execute("SELECT * FROM bus ORDER BY id ASC")
+    bus = cursor.fetchall()
     conn.close()
-    return seances
+    return bus
 
-#def get_seance_by_id(seance_id):
+#def get_bus_by_id(bus_id):
 #    conn = get_connection()
 #    cursor = conn.cursor()
-#    cursor.execute("SELECT * FROM seances WHERE id = ?", (seance_id,))
-#    seance = cursor.fetchone()
+#    cursor.execute("SELECT * FROM bus WHERE id = ?", (bus_id,))
+#    bus = cursor.fetchone()
 #    conn.close()
-#    return seance
+#    return bus
 
 
 def init_db():
@@ -184,7 +184,7 @@ def init_db():
 
     # Table des séances
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS seances (
+    CREATE TABLE IF NOT EXISTS bus (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         theme TEXT,
         nom TEXT,
@@ -192,11 +192,9 @@ def init_db():
         lumiere_dedans TEXT,
         lumiere_dehors TEXT,
         directions TEXT,
-        motivations TEXT,
+        messages TEXT,
         nombre_max_tours INTEGER,
         duree_phase INTEGER,
-        pas_tours INTEGER,
-        repetitions INTEGER,
         nbmintours INTEGER
     )
     """)

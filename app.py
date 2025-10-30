@@ -1,14 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for
-from dbseances import init_db, get_all_seances, get_seance_by_id, save_seance
+from dbbus import init_db, get_all_bus, get_bus_by_id, save_bus
 from flask import send_file
 from hey_generate_yaml import generer_yaml_depuis_formulaire
 import json
-from led_nest_mini_python import generer_seance_yaml, menu_seances  # Ton script renommé en module
+from led_nest_mini_python import generer_bus_yaml, menu_bus  # Ton script renommé en module
 import json
-from dbseances import create_effet, create_type_effet  # Assure-toi que ces fonctions existent
-from dbseances import get_effet_by_id, get_etapes_effet
+from dbbus import create_effet, create_type_effet  # Assure-toi que ces fonctions existent
+from dbbus import get_effet_by_id, get_etapes_effet
 import asyncio
-from dbseances import get_all_effets
+from dbbus import get_all_effets
 import asyncio
 import websockets
 import threading
@@ -46,12 +46,12 @@ app = Flask(__name__)
 
 init_db()
 
-def charger_seances_depuis_db():
-    rows = get_all_seances()
-    seances = {}
+def charger_bus_depuis_db():
+    rows = get_all_bus()
+    bus = {}
     for row in rows:
         theme = row[1]
-        seances[theme] = {
+        bus[theme] = {
             "id": row[0],
             "theme": row[1],
             "nom": row[2],
@@ -65,9 +65,9 @@ def charger_seances_depuis_db():
             "repetitions": row[10],
             "nbmintours": row[11]
         }
-    return seances
+    return bus
 
-menu_seances = charger_seances_depuis_db()
+menu_bus = charger_bus_depuis_db()
 
 @app.route("/effet/<int:id>")
 def voir_effet(id):
@@ -124,25 +124,25 @@ def effet():
 
 @app.route("/generer_yaml", methods=["POST"])
 def generer_yaml():
-    seance_id = request.form.get('theme')
-    seance = get_seance_by_id(seance_id)
+    bus_id = request.form.get('theme')
+    bus = get_bus_by_id(bus_id)
 
-    if not seance:
+    if not bus:
         return "❌ Séance introuvable", 404
 
     # Préparer les paramètres comme tuple
     params = (
-        seance[1],  # theme
-        seance[2],  # nom
-        seance[3],  # musique
-        seance[4],  # lumiere
-        seance[5],  # directions (JSON string)
-        seance[6],  # motivations (JSON string)
-        seance[7],  # nombre_max_tours
-        seance[8],  # duree_phase
-        seance[9],  # pas_tours
-        seance[10], # repetitions
-        seance[11]  # nbmintours
+        bus[1],  # theme
+        bus[2],  # nom
+        bus[3],  # musique
+        bus[4],  # lumiere
+        bus[5],  # directions (JSON string)
+        bus[6],  # motivations (JSON string)
+        bus[7],  # nombre_max_tours
+        bus[8],  # duree_phase
+        bus[9],  # pas_tours
+        bus[10], # repetitions
+        bus[11]  # nbmintours
     )
 
     # Générer le fichier YAML
@@ -153,36 +153,36 @@ def generer_yaml():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    seances = charger_seances_depuis_db()
+    bus = charger_bus_depuis_db()
     if request.method == 'POST':
         randomlist = request.form.get('randomlist')
         theme = request.form.get('theme')
-        if theme in seances:
-            generer_seance_yaml(theme, randomlist=randomlist)
-            message = f"Séance '{seances[theme]['nom']}' lancée avec succès !"
+        if theme in bus:
+            generer_bus_yaml(theme, randomlist=randomlist)
+            message = f"Séance '{bus[theme]['nom']}' lancée avec succès !"
         else:
             message = "Thème invalide."
 
-        return render_template('index.html', seances=seances, menu=seances, message=message)
-    return render_template('index.html', seances=seances, menu=seances)
+        return render_template('index.html', bus=bus, menu=bus, message=message)
+    return render_template('index.html', bus=bus, menu=bus)
 
 
 
 
 
-@app.route("/edit/<int:seance_id>")
-def edit(seance_id):
-    seance = get_seance_by_id(seance_id)
-    return render_template("form.html", seance=seance)
+@app.route("/edit/<int:bus_id>")
+def edit(bus_id):
+    bus = get_bus_by_id(bus_id)
+    return render_template("form.html", bus=bus)
 
 @app.route("/new")
 def new():
-    return render_template("form.html", seance=None)
+    return render_template("form.html", bus=None)
 
 @app.route("/save", methods=["POST"])
 def save():
-    seance_id = request.form.get("id")
-    save_seance(
+    bus_id = request.form.get("id")
+    save_bus(
         request.form["theme"],
         request.form["nom"],
         request.form["musique"],
@@ -194,7 +194,7 @@ def save():
         int(request.form["pas_tours"]),
         int(request.form["repetitions"]),
         int(request.form["nbmintours"]),
-        seance_id=seance_id
+        bus_id=bus_id
     )
 
     return redirect(url_for("index"))

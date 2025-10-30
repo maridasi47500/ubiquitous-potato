@@ -28,7 +28,7 @@ def generer_yaml_depuis_formulaire(params):
     motivations = nettoyer_json_embedded(motivations_json)
     print(directions,motivations)
 
-    seance = {
+    bus = {
         "metadata": {
             "name": nom,
             "description": f"Seance '{theme}' avec musique, lumières et encouragements"
@@ -38,17 +38,17 @@ def generer_yaml_depuis_formulaire(params):
                 {
                     "type": "assistant.event.OkGoogle",
                     "eventData": "query",
-                    "is": f"demarrer seance {theme}"
+                    "is": f"demarrer bus {theme}"
                 }
             ],
             "actions": []
         }
     }
 
-    seance["automations"]["actions"].extend([
+    bus["automations"]["actions"].extend([
         {
             "type": "assistant.command.Broadcast",
-            "message": f"Bienvenue dans ta seance {nom}",
+            "message": f"Bienvenue dans ta bus {nom}",
             "devices": "Jardin de devant - Jardin de devant"
         },
         {
@@ -71,7 +71,7 @@ def generer_yaml_depuis_formulaire(params):
                     message_direction += " tu peux y arriver"
                 message_motivation = random.choice(motivations)
 
-                seance["automations"]["actions"].extend([
+                bus["automations"]["actions"].extend([
                     {
                         "type": "time.delay",
                         "for": f"5sec"
@@ -111,7 +111,7 @@ def generer_yaml_depuis_formulaire(params):
                     }
                 ])
 
-    seance["automations"]["actions"].extend([
+    bus["automations"]["actions"].extend([
         {
             "type": "assistant.command.OkGoogle",
             "okGoogle": "repete apres moi Seance terminee bravo",
@@ -129,9 +129,9 @@ def generer_yaml_depuis_formulaire(params):
         }
     ])
 
-    nom_fichier = f"seance_{theme}.yaml"
+    nom_fichier = f"bus_{theme}.yaml"
     with open(nom_fichier, "w", encoding="utf-8") as fichier:
-        yaml.dump(seance, fichier, sort_keys=False)
+        yaml.dump(bus, fichier, sort_keys=False)
 
     print(f"✅ Fichier YAML '{nom_fichier}' généré avec succès.")
 

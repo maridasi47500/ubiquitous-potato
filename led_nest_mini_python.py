@@ -13,7 +13,7 @@ import pychromecast
 import asyncio
 import websockets
 import threading
-from dbseances import get_all_seances
+from dbbus import get_all_bus
 
 
 
@@ -119,13 +119,13 @@ def wait_until_media_finished(media_controller):
 
 
 # Menu des séances
-def charger_seances_depuis_db():
-    rows = get_all_seances()
-    seances = {}
+def charger_bus_depuis_db():
+    rows = get_all_bus()
+    bus = {}
     for row in rows:
         theme = row[1]
         try:
-            seances[theme] = {
+            bus[theme] = {
                 "id": row[0],
 
                 "theme": row[1],
@@ -141,7 +141,7 @@ def charger_seances_depuis_db():
                 "nombre_minimum_tours": row[11]
             }
         except:
-            seances[theme] = {
+            bus[theme] = {
                 "id": row[0],
 
                 "theme": row[1],
@@ -156,11 +156,11 @@ def charger_seances_depuis_db():
                 "repetitions": row[10],
                 "nombre_minimum_tours": row[11]
             }
-    return seances
+    return bus
 
-menu_seances = charger_seances_depuis_db()
+menu_bus = charger_bus_depuis_db()
 
-#menu_seances = {
+#menu_bus = {
 #    "eveil_matinal": {
 #        "nom": "Éveil Matinal",
 #        "musique": "https://example.com/morning_energy.mp3",
@@ -215,7 +215,7 @@ menu_seances = charger_seances_depuis_db()
 #        "repetitions": 3,
 #        "pas_tours": 5
 #    },
-#    "seance_duo": {
+#    "bus_duo": {
 #        "nom": "Séance En Duo",
 #        "musique": "https://example.com/duo_dynamique.mp3",
 #        "lumiere": "double flash",
@@ -267,9 +267,9 @@ def arreter_musique():
     mc.stop()
 
 # Fonction principale
-def generer_seance_yaml(theme,randomlist="0"):
-    menu_seances = charger_seances_depuis_db()
-    params = menu_seances[theme]
+def generer_bus_yaml(theme,randomlist="0"):
+    menu_bus = charger_bus_depuis_db()
+    params = menu_bus[theme]
     print(params)
    
     #dire(f"bienvenue à {params['nom']}")
@@ -351,7 +351,7 @@ def generer_seance_yaml(theme,randomlist="0"):
 
 
     # YAML export
-    nom_fichier = f"seance_hula_hoop_{theme}.yaml"
+    nom_fichier = f"bus_hula_hoop_{theme}.yaml"
     with open(nom_fichier, "w", encoding="utf-8") as fichier:
         yaml.dump({"theme": theme, "params": params}, fichier, sort_keys=False)
     print(f"✅ Fichier YAML '{nom_fichier}' créé avec succès")
@@ -361,12 +361,12 @@ if __name__ == "__main__":
 
 
     print("Choisis ton theme :")
-    for key, val in menu_seances.items():
+    for key, val in menu_bus.items():
         print(f"- {key} : {val['nom']}")
     
     choix = input("Tape le nom du theme (ex: zen_fluidite) : ").strip()
-    if choix in menu_seances:
-        generer_seance_yaml(choix)
+    if choix in menu_bus:
+        generer_bus_yaml(choix)
     else:
         print("❌ Theme invalide. Relance le script et choisis parmi les options.")
 
