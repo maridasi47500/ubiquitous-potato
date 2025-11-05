@@ -52,52 +52,51 @@ clean_and_parse_json(nettoyer_json_embedded(row[6])),
              row[7],
              row[8],
             row[9],
-             row[10],
-             row[11]
+clean_and_parse_json(nettoyer_json_embedded(row[10]))
        ) 
 
     conn.close()
     return hey
 
-def save_bus(theme, nom, musique, lumiere, directions, motivations,
-                nombre_max_tours, duree_phase, pas_tours, repetitions, nbmintours, bus_id=None):
+def save_bus(theme, nom, musique, lumiere_dedans, lumiere_dehors, directions, motivations,
+                nombre_max_tours, duree_phase, nbmintours, popstar,  bus_id=None):
     conn = get_connection()
     cursor = conn.cursor()
     if bus_id:
         cursor.execute("""
-            UPDATE bus SET theme=?, nom=?, musique=?, lumiere=?, directions=?, motivations=?,
-            nombre_max_tours=?, duree_phase=?, pas_tours=?, repetitions=?, nbmintours=? WHERE id=?
+            UPDATE bus SET theme=?, nom=?, musique=?, lumiere_dedans=?, lumiere_dehors, directions=?, motivations=?,
+            nombre_max_tours=?, duree_phase=?, nbmintours=?, popstar=? WHERE id=?
         """, (
-            theme, nom, musique, lumiere,
+            theme, nom, musique, lumiere_dedans, lumiere_dehors,
             (directions),
             (motivations),
-            nombre_max_tours, duree_phase, pas_tours, repetitions, nbmintours, bus_id
+            nombre_max_tours, duree_phase, nbmintours, (popstar), bus_id
         ))
     else:
         cursor.execute("""
-            INSERT INTO bus (theme, nom, musique, lumiere, directions, motivations,
-            nombre_max_tours, duree_phase, pas_tours, repetitions, nbmintours)
+            INSERT INTO bus (theme, nom, musique, lumiere_dedans, lumiere_dehors, directions, motivations,
+            nombre_max_tours, duree_phase, nbmintours, popstar)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
-            theme, nom, musique, lumiere,
+            theme, nom, musique, lumiere_dedans, lumiere_dehors,
             json.dumps(directions),
             json.dumps(motivations),
-            nombre_max_tours, duree_phase, pas_tours, repetitions, nbmintours
+            nombre_max_tours, duree_phase, nbmintours, popstar
         ))
     conn.commit()
     conn.close()
 
-def ajouter_bus(theme, nom, musique, lumiere_dedans, lumiere_dehors, directions, messages, nombre_max_tours, duree_phase, pas_tours, repetitions , nbmintours=2):
+def ajouter_bus(theme, nom, musique, lumiere_dedans, lumiere_dehors, directions, messages, nombre_max_tours, duree_phase, nbmintours=2, popstar):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-    INSERT INTO bus (theme, nom, musique, lumiere_dehors, lumiere_dedans, directions, messages, nombre_max_tours, duree_phase, nbmintours)
+    INSERT INTO bus (theme, nom, musique, lumiere_dehors, lumiere_dedans, directions, messages, nombre_max_tours, duree_phase, nbmintours, popstar)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
-        theme, nom, musique, lumiere,
+        theme, nom, musique, lumiere_dedans, lumiere_dehors,
         json.dumps(directions),
         json.dumps(messages),
-        nombre_max_tours, duree_phase, nbmintours
+        nombre_max_tours, duree_phase, nbmintours, json.dumps(popstar)
     ))
     conn.commit()
 
@@ -195,7 +194,8 @@ def init_db():
         messages TEXT,
         nombre_max_tours INTEGER,
         duree_phase INTEGER,
-        nbmintours INTEGER
+        nbmintours INTEGER,
+        popstar TEXT
     )
     """)
 

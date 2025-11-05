@@ -61,9 +61,8 @@ def charger_bus_depuis_db():
             "motivations": nettoyer_json_embedded(row[6]),
             "nombre_max_tours": row[7],
             "duree_phase": row[8],
-            "pas_tours": row[9],
-            "repetitions": row[10],
-            "nbmintours": row[11]
+            "nbmintours": row[9],
+            "popstar": nettoyer_json_embedded(row[10])
         }
     return bus
 
@@ -140,9 +139,8 @@ def generer_yaml():
         bus[6],  # motivations (JSON string)
         bus[7],  # nombre_max_tours
         bus[8],  # duree_phase
-        bus[9],  # pas_tours
-        bus[10], # repetitions
-        bus[11]  # nbmintours
+        bus[9],  # nbmintours
+        bus[10]  # motivations (JSON string)
     )
 
     # Générer le fichier YAML
@@ -191,9 +189,8 @@ def save():
         json.dumps(request.form["motivations"]),
         int(request.form["nombre_max_tours"]),
         int(request.form["duree_phase"]),
-        int(request.form["pas_tours"]),
-        int(request.form["repetitions"]),
         int(request.form["nbmintours"]),
+        json.dumps(request.form["popstar"]),
         bus_id=bus_id
     )
 

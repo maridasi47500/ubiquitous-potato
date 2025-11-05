@@ -12,6 +12,7 @@
 - autre : python3 app.py
 - autre : python3 lumiere_ws_controller
 - python3 dbseances
+- ajoute des motifs du bus, ou un crazy lettering
 
 ![alt text](programme41.png)
 ![alt text](programme42.png)
