@@ -2,22 +2,22 @@
 <html>
 <head><title>Formulaire Bus</title></head>
 <body>
-<h1>{{ 'Modifier' if seance else 'Ajouter' }} un bus </h1>
+<h1>{{ 'Modifier' if bus else 'Ajouter' }} un bus </h1>
 <form method="post" action="{{ url_for('save') }}">
-  {% if seance %}<input type="hidden" name="id" value="{{ seance[0] }}">{% endif %}
-  <label>Thème: <input name="theme" value="{{ seance[1] if seance else '' }}"></label><br>
-  <label>Nom du bus (nom de bus de tournée ou shiva touristique): <input name="nom" value="{{ seance[2] if seance else '' }}"></label><br>
-  <label>Musique (nom de radio pour google automatisations ou lien de flux radio): <input name="musique" value="{{ seance[3] if seance else '' }}"></label><br>
-  <label>Lumières de dehors: <input name="lumiere_dehors" value="{{ seance[4] if seance else '' }}"></label><br>
-  <label>Lumière de dedans: <input name="lumiere_dedans" value="{{ seance[4] if seance else '' }}"></label><br>
-  <label>Directions/Lieux où s'arreter (like ["grande place", "photo souvenir lettres en grand du nom de la ville"]): <input name="directions" value="{{ seance[5] if seance else '[]' }}"></label><br>
+  {% if bus %}<input type="hidden" name="id" value="{{ bus[0] }}">{% endif %}
+  <label>Thème: <input name="theme" value="{{ bus[1] if bus else '' }}"></label><br>
+  <label>Nom du bus (nom de bus de tournée ou shiva touristique): <input name="nom" value="{{ bus[2] if bus else '' }}"></label><br>
+  <label>Musique (nom de radio pour google automatisations ou lien de flux radio): <input name="musique" value="{{ bus[3] if bus else '' }}"></label><br>
+  <label>Lumières de dehors: <input name="lumiere_dehors" value="{{ bus[4] if bus else '' }}"></label><br>
+  <label>Lumière de dedans: <input name="lumiere_dedans" value="{{ bus[5] if bus else '' }}"></label><br>
+  <label>Directions/Lieux où s'arreter (like ["grande place", "photo souvenir lettres en grand du nom de la ville"]): <input name="directions" value="{{ bus[6] if bus else '[]' }}"></label><br>
 
-  <label>Messages /mots (like ["comment ca va?", "comment tu t'appelles?", "uprising", "infinity", "beautiful business", "still going", "sacrifice", "all eyes on you"]): <input name="motivations" value="{{ seance[6] if seance else '[]' }}"></label><br>
-  <label>Max tours de la ville: <input name="nombre_max_tours" type="number" value="{{ seance[7] if seance else 20 }}"></label><br>
+  <label>Messages /mots (like ["comment ca va?", "comment tu t'appelles?", "uprising", "infinity", "beautiful business", "still going", "sacrifice", "all eyes on you"]): <input name="motivations" value="{{ bus[7] if bus else '[]' }}"></label><br>
+  <label>Max tours de la ville: <input name="nombre_max_tours" type="number" value="{{ bus[8] if bus else 3 }}"></label><br>
 
-  <label>Durée 1 voyage entre 2 arret de bus (secondes): <input name="duree_phase" type="number" value="{{ seance[8] if seance else 10 }}"></label><br>
-  <label>nombre minimum  de tours/arrets/bus stop: <input name="nbmintours" type="number" min="2" value="{{ seance[11] if seance else 2 }}"></label><br>
-  <label>nom movie hero, or actress, or pop star (like ["hero 1", "actress2", "popstar3"]): <input name="popstar" value="{{ seance[12] if seance else '[]' }}"></label><br>
+  <label>Durée 1 voyage entre 2 arret de bus (secondes): <input name="duree_phase" type="number" value="{{ bus[9] if bus else 10 }}"></label><br>
+  <label>nombre minimum  de tours/arrets/bus stop: <input name="nbmintours" type="number" min="2" value="{{ bus[10] if bus else 2 }}"></label><br>
+  <label>nom movie hero, or actress, or pop star (like ["hero 1", "actress2", "popstar3"]): <input name="popstar" value="{{ bus[11] if bus else '[]' }}"></label><br>
   <button type="submit">💾 Sauvegarder</button>
 </form>
 <a href="/">retour</a>

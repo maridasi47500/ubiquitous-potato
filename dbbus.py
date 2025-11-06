@@ -66,7 +66,7 @@ def save_bus(theme, nom, musique, lumiere_dedans, lumiere_dehors, directions, mo
     cursor = conn.cursor()
     if bus_id:
         cursor.execute("""
-            UPDATE bus SET theme=?, nom=?, musique=?, lumiere_dedans=?, lumiere_dehors, directions=?, motivations=?,
+            UPDATE bus SET theme=?, nom=?, musique=?, lumiere_dedans=?, lumiere_dehors=?, directions=?, motivations=?,
             nombre_max_tours=?, duree_phase=?, nbmintours=?, popstar=? WHERE id=?
         """, (
             theme, nom, musique, lumiere_dedans, lumiere_dehors,
@@ -76,8 +76,7 @@ def save_bus(theme, nom, musique, lumiere_dedans, lumiere_dehors, directions, mo
         ))
     else:
         cursor.execute("""
-            INSERT INTO bus (theme, nom, musique, lumiere_dedans, lumiere_dehors, directions, motivations,
-            nombre_max_tours, duree_phase, nbmintours, popstar)
+            INSERT INTO bus (theme, nom, musique, lumiere_dedans, lumiere_dehors, directions, motivations, nombre_max_tours, duree_phase, nbmintours, popstar)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             theme, nom, musique, lumiere_dedans, lumiere_dehors,
