@@ -88,6 +88,12 @@
       <strong>{{ mesbus[bus]['nom'] }}</strong> — {{ mesbus[bus]['lumiere_dedans'] }}
       <strong>{{ mesbus[bus]['lumiere_dehors'] }}
       <a href="{{ url_for('edit', bus_id=mesbus[bus]['id']) }}">✏️ Modifier</a>
+{% set seq = ['#EDD7C9', '#EDD7C9', '#EEE'] %}
+{% set seqsize = ['0.1', '0.3', '0.5', '0.7', '1', '2', '3', '5'] %}
+{% set mysize = ['20', '30', '25', '40', '35', '45', '50'] %}
+  {% for motivation in mesbus[bus]["motivations"] %}
+<div style="font-size: {{mysize | random}}px;-webkit-text-stroke: {{seqsize | random}}px navy;letter-spacing:{{seqsize | random}}px;color:{{seq | random }};">{{ motivation }}</div>
+  {% endfor %}
     </li>
   {% endfor %}
 </ul>
