@@ -15,7 +15,7 @@
   <label>Messages /mots (like ["comment ca va?", "comment tu t'appelles?", "uprising", "infinity", "beautiful business", "still going", "sacrifice", "all eyes on you"]): <input name="motivations" value="{{ seance[6] if seance else '[]' }}"></label><br>
   <label>Max tours de la ville: <input name="nombre_max_tours" type="number" value="{{ seance[7] if seance else 20 }}"></label><br>
 
-  <label>Durée 1 tour (minutes): <input name="duree_phase" type="number" value="{{ seance[8] if seance else 10 }}"></label><br>
+  <label>Durée 1 voyage entre 2 arret de bus (secondes): <input name="duree_phase" type="number" value="{{ seance[8] if seance else 10 }}"></label><br>
   <label>nombre minimum  de tours/arrets/bus stop: <input name="nbmintours" type="number" min="2" value="{{ seance[11] if seance else 2 }}"></label><br>
   <label>nom movie hero, or actress, or pop star (like ["hero 1", "actress2", "popstar3"]): <input name="popstar" value="{{ seance[12] if seance else '[]' }}"></label><br>
   <button type="submit">💾 Sauvegarder</button>

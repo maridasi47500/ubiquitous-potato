@@ -47,19 +47,21 @@ def get_bus_by_id(bus_id):
              row[2],
              row[3],
              row[4],
-clean_and_parse_json(nettoyer_json_embedded(row[5])), 
+             row[5],
 clean_and_parse_json(nettoyer_json_embedded(row[6])), 
-             row[7],
+clean_and_parse_json(nettoyer_json_embedded(row[7])), 
+
              row[8],
             row[9],
-clean_and_parse_json(nettoyer_json_embedded(row[10]))
+            row[10],
+clean_and_parse_json(nettoyer_json_embedded(row[11]))
        ) 
 
     conn.close()
     return hey
 
 def save_bus(theme, nom, musique, lumiere_dedans, lumiere_dehors, directions, motivations,
-                nombre_max_tours, duree_phase, nbmintours, popstar,  bus_id=None):
+                nombre_max_tours, duree_phase, nbmintours,popstar, bus_id=None):
     conn = get_connection()
     cursor = conn.cursor()
     if bus_id:
@@ -81,17 +83,17 @@ def save_bus(theme, nom, musique, lumiere_dedans, lumiere_dehors, directions, mo
             theme, nom, musique, lumiere_dedans, lumiere_dehors,
             json.dumps(directions),
             json.dumps(motivations),
-            nombre_max_tours, duree_phase, nbmintours, popstar
+            nombre_max_tours, duree_phase, nbmintours, json.dumps(popstar)
         ))
     conn.commit()
     conn.close()
 
-def ajouter_bus(theme, nom, musique, lumiere_dedans, lumiere_dehors, directions, messages, nombre_max_tours, duree_phase, nbmintours=2, popstar):
+def ajouter_bus(theme, nom, musique, lumiere_dedans, lumiere_dehors, directions, messages, nombre_max_tours, duree_phase, popstar, nbmintours=2):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
     INSERT INTO bus (theme, nom, musique, lumiere_dehors, lumiere_dedans, directions, messages, nombre_max_tours, duree_phase, nbmintours, popstar)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         theme, nom, musique, lumiere_dedans, lumiere_dehors,
         json.dumps(directions),
@@ -191,7 +193,7 @@ def init_db():
         lumiere_dedans TEXT,
         lumiere_dehors TEXT,
         directions TEXT,
-        messages TEXT,
+        motivations TEXT,
         nombre_max_tours INTEGER,
         duree_phase INTEGER,
         nbmintours INTEGER,

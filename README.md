@@ -13,6 +13,10 @@
 - autre : python3 lumiere_ws_controller
 - python3 dbseances
 - ajoute des motifs du bus, ou un crazy lettering
+ - tu peux faire "grep -r -i flux_led.WifiLedBulb" pour trouver là ou modifier l'IP de la lampe
+
+
+:enjoy:
 
 ![alt text](programme41.png)
 ![alt text](programme42.png)

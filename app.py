@@ -56,13 +56,16 @@ def charger_bus_depuis_db():
             "theme": row[1],
             "nom": row[2],
             "musique": row[3],
-            "lumiere": row[4],
-            "directions": nettoyer_json_embedded(row[5]),
-            "motivations": nettoyer_json_embedded(row[6]),
-            "nombre_max_tours": row[7],
-            "duree_phase": row[8],
-            "nbmintours": row[9],
-            "popstar": nettoyer_json_embedded(row[10])
+            "lumiere_dedans": row[4],
+            "lumiere_dehors": row[5],
+            "directions": nettoyer_json_embedded(row[6]),
+            "motivations": nettoyer_json_embedded(row[7]),
+            "nombre_max_tours": row[8],
+            "duree_phase": row[9],
+
+            "nbmintours": row[10],
+            "popstar": nettoyer_json_embedded(row[11])
+
         }
     return bus
 
@@ -131,16 +134,18 @@ def generer_yaml():
 
     # Préparer les paramètres comme tuple
     params = (
-        bus[1],  # theme
-        bus[2],  # nom
-        bus[3],  # musique
-        bus[4],  # lumiere
+         # theme
+        bus[1],  # nom
+        bus[2],  # musique
+        bus[3],  # lumiere dedans
+        bus[4],  # lumiere dehorsd
         bus[5],  # directions (JSON string)
         bus[6],  # motivations (JSON string)
         bus[7],  # nombre_max_tours
         bus[8],  # duree_phase
         bus[9],  # nbmintours
-        bus[10]  # motivations (JSON string)
+        bus[10],  # pop stars (JSON string)
+        bus[11]  # pop stars (JSON string)
     )
 
     # Générer le fichier YAML
@@ -161,8 +166,8 @@ def index():
         else:
             message = "Thème invalide."
 
-        return render_template('index.html', bus=bus, menu=bus, message=message)
-    return render_template('index.html', bus=bus, menu=bus)
+        return render_template('index.html', mesbus=bus, menu=bus, message=message)
+    return render_template('index.html', mesbus=bus, menu=bus)
 
 
 
@@ -184,13 +189,16 @@ def save():
         request.form["theme"],
         request.form["nom"],
         request.form["musique"],
-        request.form["lumiere"],
+        request.form["lumiere_dedans"],
+        request.form["lumiere_dehors"],
         json.dumps(request.form["directions"]),
         json.dumps(request.form["motivations"]),
         int(request.form["nombre_max_tours"]),
         int(request.form["duree_phase"]),
         int(request.form["nbmintours"]),
         json.dumps(request.form["popstar"]),
+
+
         bus_id=bus_id
     )
 

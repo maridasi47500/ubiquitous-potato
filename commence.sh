@@ -6,7 +6,7 @@ yesB="python3 app.py"
 #3
 yesC="python3 lumiere_ws_server.py"
 #gnome-terminal -x bash -c -- "$hey; $wow;$yesA"
-#gnome-terminal -x bash -c -- "$hey; $wow;cd ~/hulahoop;$yesB"
-#gnome-terminal -x bash -c -- "$hey; $wow;cd ~/hulahoop;$yesC"
-gnome-terminal --tab --title="tab 1" --command="bash -c 'cd ~/hulahoop;$hey; $wow;cd ~/hulahoop;ls;$yesA;'" --tab --title="tab 2" --command="bash -c '$hey; $wow;cd ~/hulahoop;ls;$yesB'" --tab --title="tab 3" --command="bash -c '$hey; $wow;ls;cd ~/hulahoop;$yesC;'"
+#gnome-terminal -x bash -c -- "$hey; $wow;cd ~/busville;$yesB"
+#gnome-terminal -x bash -c -- "$hey; $wow;cd ~/busville;$yesC"
+gnome-terminal --tab --title="tab 1" --command="bash -c 'cd ~/busville;$hey; $wow;cd ~/busville;ls;$yesA;'" --tab --title="tab 2" --command="bash -c '$hey; $wow;cd ~/busville;ls;$yesB'" --tab --title="tab 3" --command="bash -c '$hey; $wow;ls;cd ~/busville;$yesC;'"
 

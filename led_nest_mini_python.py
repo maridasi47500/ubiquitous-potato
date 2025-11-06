@@ -40,15 +40,9 @@ def envoyer_lumiere_thread(style):
     def run():
         asyncio.run(envoyer_lumiere(style))
     threading.Thread(target=run).start()
-def generer_message_vocal(tours, direction, motivations):
-    texte = f"\n {tours} tours vers {direction}, "
-    if "gauche" in direction:
-        #texte += " Même si c’est plus difficile à gauche, tu peux y arriver, "
-        texte += " tu peux y arriver, "
+def generer_message_vocal(direction, motivations):
+    texte = f"\n prochain arret {direction[0]}, "
     texte += f" {random.choice(motivations)}, "
-    speed=str(randint(100, 200)) #
-    #texte += "<prosody rate=\""+speed+"%\">"+", ".join(str(n) for n in range(1, tours + 1)) + ",</prosody>"
-    texte +=", ".join(str(n) for n in range(1, tours + 1))+","
     return texte
 
 
@@ -69,7 +63,7 @@ mcradio = cast.media_controller
 
 
 # Initialisation LED
-led = flux_led.WifiLedBulb("192.168.1.12")  # IP de l’ampoule LED
+led = flux_led.WifiLedBulb("192.168.1.16")  # IP de l’ampoule LED
 def wait_until_seconds(media_controller, seconds):
     """
     Attend que le média soit en lecture pendant un nombre de secondes donné.
@@ -131,14 +125,15 @@ def charger_bus_depuis_db():
                 "theme": row[1],
                 "nom": row[2],
                 "musique": row[3],
-                "lumiere": row[4],
-                "directions": nettoyer_json_embedded(row[5]),
-                "motivations": nettoyer_json_embedded(row[6]),
-                "nombre_max_tours": row[7],
-                "duree_phase": row[8],
-                "pas_tours": row[9],
-                "repetitions": row[10],
-                "nombre_minimum_tours": row[11]
+                "lumiere_dedans": row[4],
+                "lumiere_dehors": row[5],
+                "directions": nettoyer_json_embedded(row[6]),
+                "motivations": nettoyer_json_embedded(row[7]),
+                "nombre_max_tours": row[8],
+                "duree_phase": row[9],
+
+                "nombre_minimum_tours": row[10],
+                "popstar": row[11]
             }
         except:
             bus[theme] = {
@@ -147,14 +142,15 @@ def charger_bus_depuis_db():
                 "theme": row[1],
                 "nom": row[2],
                 "musique": row[3],
-                "lumiere": row[4],
-                "directions": json.loads(row[5]),
-                "motivations": json.loads(row[6]),
-                "nombre_max_tours": row[7],
-                "duree_phase": row[8],
-                "pas_tours": row[9],
-                "repetitions": row[10],
-                "nombre_minimum_tours": row[11]
+                "lumiere_dedans": row[4],
+                "lumiere_dehors": row[5],
+                "directions": json.loads(row[6]),
+                "motivations": json.loads(row[7]),
+                "nombre_max_tours": row[8],
+                "duree_phase": row[9],
+
+                "nombre_minimum_tours": row[10],
+                "popstar": row[11]
             }
     return bus
 
@@ -279,54 +275,53 @@ def generer_bus_yaml(theme,randomlist="0"):
 
 
 
-    print(f"💡 Effet lumière : {params['lumiere']}")
-    #asyncio.run(envoyer_lumiere(params["lumiere"]))
-    envoyer_lumiere_thread(params["lumiere"])
+    print(f"💡 Effet lumière : {params['lumiere_dedans']}")
+    print(f"💡 Effet lumière dehors : {params['lumiere_dehors']}")
+    envoyer_lumiere_thread(params["lumiere_dehors"])
 
-    for _ in range(params["repetitions"]):
-        y=list(range(params["nombre_minimum_tours"], params["nombre_max_tours"] + 1, params["pas_tours"]))
+    y=list(range(params["nombre_minimum_tours"], params["nombre_max_tours"] + 1, 1))
+    if randomlist == "1":
+        random.shuffle(y)
+
+    for tours in y:
+        envoyer_lumiere_thread(params["lumiere_dedans"])
+    
+        print("before state of radio is :  "+str(params['duree_phase'])+" seconds statut mcradio:", mcradio.status.player_state)
+        if mcradio.status.player_state == "IDLE":
+            mcradio.play_media(params['musique'], 'audio/mp3', stream_type='LIVE')
+            mcradio.block_until_active()
+            mcradio.play()
+            wait_until_seconds(mcradio,int(params['duree_phase']))
+            print("after "+str(params['duree_phase'])+" seconds statut mcradio:", mcradio.status.player_state)
+        elif mcradio.status.player_state == "PAUSED":
+            print("hey")
+            mcradio.play()
+            wait_until_seconds(mcradio,int(params['duree_phase']))
+            print("after "+str(params['duree_phase'])+" seconds statut mcradio:", mcradio.status.player_state)
+        else:
+            mcradio.play_media(params['musique'], 'audio/mp3', stream_type='LIVE')
+            mcradio.block_until_active()
+            mcradio.play()
+            wait_until_seconds(mcradio,int(params['duree_phase']))
+            print("after "+str(params['duree_phase'])+" seconds statut mcradio:", mcradio.status.player_state)
+    
+        #mcradio.pause()
+    
+        d=list(params["directions"])
         if randomlist == "1":
-            random.shuffle(y)
-        for tours in y:
-            envoyer_lumiere_thread("flash intense")
-    
-            print("before state of radio is :  "+str(params['duree_phase'])+" seconds statut mcradio:", mcradio.status.player_state)
-            if mcradio.status.player_state == "IDLE":
-                mcradio.play_media(params['musique'], 'audio/mp3', stream_type='LIVE')
-                mcradio.block_until_active()
-                mcradio.play()
-                wait_until_seconds(mcradio,int(params['duree_phase']))
-                print("after "+str(params['duree_phase'])+" seconds statut mcradio:", mcradio.status.player_state)
-            elif mcradio.status.player_state == "PAUSED":
-                print("hey")
-                mcradio.play()
-                wait_until_seconds(mcradio,int(params['duree_phase']))
-                print("after "+str(params['duree_phase'])+" seconds statut mcradio:", mcradio.status.player_state)
-            else:
-                mcradio.play_media(params['musique'], 'audio/mp3', stream_type='LIVE')
-                mcradio.block_until_active()
-                mcradio.play()
-                wait_until_seconds(mcradio,int(params['duree_phase']))
-                print("after "+str(params['duree_phase'])+" seconds statut mcradio:", mcradio.status.player_state)
-    
-            #mcradio.pause()
-    
-            d=list(params["directions"])
-            if randomlist == "1":
-                random.shuffle(d)
-            for direction in d:
-                mytext=""
-                print(f"\n➡️ {tours} tours vers {direction}")
-                mytext = generer_message_vocal(tours, direction, params['motivations'])
-    # Génération du message vocal
-                tts = gTTS(mytext, lang='fr')
-                tts.save("message.mp3")
-                # Diffusion du message
-                mc.play_media("http://192.168.1.18:8000/message.mp3", "audio/mp3")  # Remplace par l’URL accessible depuis ton réseau
-                mc.block_until_active()
-                mc.play()
-                wait_until_media_finished(mc)
-                time.sleep(0.5)
+            random.shuffle(d)
+        mytext=""
+        print(f"\n➡️ {tours} tours vers {direction}")
+        mytext = generer_message_vocal(d, params['motivations'])
+        # Génération du message vocal
+        tts = gTTS(mytext, lang='fr')
+        tts.save("message.mp3")
+        # Diffusion du message
+        mc.play_media("http://192.168.1.18:8000/message.mp3", "audio/mp3")  # Remplace par l’URL accessible depuis ton réseau
+        mc.block_until_active()
+        mc.play()
+        wait_until_media_finished(mc)
+        time.sleep(0.5)
 
 
 

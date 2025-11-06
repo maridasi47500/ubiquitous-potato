@@ -1,8 +1,6 @@
 import yaml
 import json
 import random
-import json
-import random
 
 def nettoyer_json_embedded(data, max_depth=5):
     """Essaie de décoder un JSON encodé plusieurs fois."""
@@ -19,19 +17,19 @@ def nettoyer_json_embedded(data, max_depth=5):
 
 def generer_yaml_depuis_formulaire(params):
     (
-        theme, nom, musique, lumiere, directions_json, motivations_json,
-        nombre_max_tours, duree_phase, pas_tours, repetitions, nbmintours
+        theme, nom, musique, lumiere_dedans, lumiere_dehors, directions_json, motivations_json,
+        nombre_max_tours, duree_phase, nbmintours, popstar
     ) = params
 
     #directions = json.loads(json.loads(str(directions_json)))
     directions = nettoyer_json_embedded(directions_json)
     motivations = nettoyer_json_embedded(motivations_json)
-    print(directions,motivations)
+    print(theme, nom, musique, lumiere_dedans, lumiere_dehors, directions,motivations)
 
     bus = {
         "metadata": {
             "name": nom,
-            "description": f"Seance '{theme}' avec musique, lumières et encouragements"
+            "description": f"Voyage en bus '{theme}' avec musique, lumières et messages"
         },
         "automations": {
             "starters": [
@@ -48,7 +46,7 @@ def generer_yaml_depuis_formulaire(params):
     bus["automations"]["actions"].extend([
         {
             "type": "assistant.command.Broadcast",
-            "message": f"Bienvenue dans ta bus {nom}",
+            "message": f"Bienvenue dans ton bus {nom}",
             "devices": "Jardin de devant - Jardin de devant"
         },
         {
@@ -59,62 +57,58 @@ def generer_yaml_depuis_formulaire(params):
         {
             "type": "device.command.ActivateScene",
             "activate": "true",
-            "devices": f"en mode {lumiere}"
+            "devices": f"en mode {lumiere_dehors}"
         }
     ])
 
-    for _ in range(repetitions):
-        for tours in range(nbmintours, nombre_max_tours + 1, pas_tours):
-            for direction in directions:
-                message_direction = f"Tourne vers {direction} pour {tours} tours"
-                if "gauche" in direction:
-                    message_direction += " tu peux y arriver"
-                message_motivation = random.choice(motivations)
+    for tours in range(nbmintours, nombre_max_tours + 1, 1):
+       for direction in directions:
+           message_direction = f"prochain arret {direction}"
+           message_motivation = random.choice(motivations)
 
-                bus["automations"]["actions"].extend([
-                    {
-                        "type": "time.delay",
-                        "for": f"5sec"
-                    },
-                    {
-                        "type": "assistant.command.Broadcast",
-                        "message": f"{message_direction}",
-                        "devices": "Jardin de devant - Jardin de devant"
-                    },
-                    {
-                        "type": "time.delay",
-                        "for": f"5sec"
-                    },
-                    {
-                        "type": "assistant.command.Broadcast",
-                        "message": f"{message_motivation}",
-                        "devices": "Jardin de devant - Jardin de devant"
-                    },
-                    {
-                        "type": "time.delay",
-                        "for": f"5sec"
-                    },
-                    {
-                        "type": "assistant.command.OkGoogle",
-                        "okGoogle": f"compter de 1 a {tours}",
-                        "devices": "Jardin de devant - Jardin de devant"
-                    },
+           bus["automations"]["actions"].extend([
+               {
+                   "type": "time.delay",
+                   "for": f"5sec"
+               },
+               {
+                   "type": "assistant.command.Broadcast",
+                   "message": f"{message_direction}",
+                   "devices": "Jardin de devant - Jardin de devant"
+               },
+               {
+                   "type": "time.delay",
+                   "for": f"5sec"
+               },
+               {
+                   "type": "assistant.command.Broadcast",
+                   "message": f"{message_motivation}",
+                   "devices": "Jardin de devant - Jardin de devant"
+               },
+               {
+                   "type": "time.delay",
+                   "for": f"5sec"
+               },
 
-                    {
-                        "type": "device.command.ActivateScene",
-                        "activate": "true",
-                        "devices": "en mode flash"
-                    },
-                    {
-                        "type": "time.delay",
-                        "for": f"{duree_phase}sec"
-                    }
-                ])
+               {
+                   "type": "device.command.ActivateScene",
+                   "activate": "true",
+                   "devices": f"en mode {lumiere_dedans}"
+               },
+               {
+                   "type": "time.delay",
+                   "for": f"{duree_phase}sec"
+               }
+           ])
 
     bus["automations"]["actions"].extend([
         {
-            "type": "assistant.command.OkGoogle",
-            "okGoogle": "repete apres moi Seance terminee bravo",
+            "type": "time.delay",
+            "for": f"5sec"
+        },
+        {
+            "type": "assistant.command.Broadcast",
+            "message": f"le bus est arrivé",
             "devices": "Jardin de devant - Jardin de devant"
         },
         {

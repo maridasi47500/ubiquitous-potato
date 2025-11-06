@@ -85,8 +85,9 @@
 <ul>
   {% for bus in mesbus %}
     <li>
-      <strong>{{ bus[s]['nom'] }}</strong> — {{ bus[s]['lumiere'] }}
-      <a href="{{ url_for('edit', bus_id=bus[s]['id']) }}">✏️ Modifier</a>
+      <strong>{{ mesbus[bus]['nom'] }}</strong> — {{ mesbus[bus]['lumiere_dedans'] }}
+      <strong>{{ mesbus[bus]['lumiere_dehors'] }}
+      <a href="{{ url_for('edit', bus_id=mesbus[bus]['id']) }}">✏️ Modifier</a>
     </li>
   {% endfor %}
 </ul>

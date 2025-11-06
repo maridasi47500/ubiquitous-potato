@@ -3,7 +3,7 @@ import time
 import flux_led
 import multiprocessing
 
-led = flux_led.WifiLedBulb("192.168.1.12")
+led = flux_led.WifiLedBulb("192.168.1.16")
 
 def effet_lumiere(style):
     if style == "bleu doux":
